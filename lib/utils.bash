@@ -77,7 +77,7 @@ get_ext() {
 }
 
 download_release() {
-	local version filename url
+	local major minor version filename url
 	version="$1"
 	filename="$2"
 
@@ -90,10 +90,13 @@ download_release() {
 		fi
 	fi
 
-	if [[ "$version" < "0.5.0" ]]; then
-		url="$GH_REPO/releases//download/v${version}/$TOOL_NAME-${version}-${architecture}-${os}.${ext}"
+	major=$(echo "$version" | cut -d. -f1)
+	minor=$(echo "$version" | cut -d. -f2)
+
+	if [ "$major" == 0 ] && [ "$minor" -lt 5 ] ; then
+		url="$GH_REPO/releases/download/v${version}/$TOOL_NAME-${version}-${architecture}-${os}.${ext}"
 	else
-		url="$GH_REPO/releases//download/${version}/$TOOL_NAME-${architecture}-${os}.${ext}"
+		url="$GH_REPO/releases/download/${version}/$TOOL_NAME-${architecture}-${os}.${ext}"
 	fi
 
 	echo "* Downloading $TOOL_NAME release $version..."
